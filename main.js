@@ -1,5 +1,5 @@
-Array_1 = ["alarm clock","book","basketball","baseball","phone","airplane","circle","bridge",];
-random_number = Math.floor((Math.random() * Array_1.length) + 1);
+Array_1 = ["alarm clock","book","basketball","baseball","cell phone","airplane","circle","bridge",];
+random_number = Math.floor(Math.random() * Array_1.length);
 console.log(Array_1[random_number]);
 sketch = Array_1[random_number];
 document.getElementById('guess').innerHTML = 'Sketch to be drawn: ' + sketch
@@ -12,11 +12,11 @@ score = 0;
 
 function updateCanvas(){
     background("white");
-    random_number = Math.floor((Math.random() * Array_1.length) + 1);
+    random_number = Math.floor(Math.random() * Array_1.length);
     console.log(Array_1[random_number]);
     sketch = Array_1[random_number];
     document.getElementById('guess').innerHTML = 'Sketch to be drawn: ' + sketch
-
+    drawn_sketch = "";
 }
 
 function setup() {
@@ -57,8 +57,11 @@ function classifyCanvas() {
 function gotResult(error, results) {
     if(error){
         console.error(error);
+        return;
     }
     console.log(results);
+    // DoodleNet labels use underscores ("alarm_clock"), so swap them for spaces
+    drawn_sketch = results[0].label.replace(/_/g, ' ');
     document.getElementById('label').innerHTML = 'Your sketch: ' + drawn_sketch;
     document.getElementById('confidence').innerHTML = 'Confidence: ' + Math.round(results[0].confidence * 100) + '%';
 }
@@ -66,7 +69,6 @@ function gotResult(error, results) {
 function check_sketch(){
     timer_counter++;
     document.getElementById('time').innerHTML = 'Timer: ' + timer_counter;
-    console.log(timer_counter);
     
     if(timer_counter > 600){
         timer_counter = 0;
